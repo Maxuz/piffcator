@@ -3,17 +3,17 @@
 #include "Indicator.h"
 
 #define STATE 1
-#define MAIN_LOOP_DELAY 50
+#define MAIN_LOOP_DELAY 5
 
 #define DEBUG_PORT_NUMBER 9600
-#define RUN_BTN_PIN 2
-#define GREEN_LED_PIN 3 // Индикатор стадии: выключен - программа не запущена. Горит - программа выполняется. Моргает - программа завершена.
+#define RUN_BTN_PIN 7
+#define GREEN_LED_PIN 4 // Индикатор стадии: выключен - программа не запущена. Горит - программа выполняется. Моргает - программа завершена.
 #define TEMP_SENSOR_PIN 6
-#define RELAY_SENSOR_PIN 7
+#define RELAY_SENSOR_PIN 5
 
-#define TEMP_IND_RESET_PIN 9
-#define TEMP_IND_FIRST_DIGIT_PIN 10
-#define TEMP_IND_SECOND_DIGIT_PIN 11
+#define TEMP_IND_RESET_PIN 11
+#define TEMP_IND_FIRST_DIGIT_PIN 2
+#define TEMP_IND_SECOND_DIGIT_PIN 3
 #define TEMP_IND_PIN 12
 
 #define ZERO_STAGE 0 // 0 состояние: плата включена, программа не запущена.
@@ -92,11 +92,11 @@ void loop() {
         startFirstStage();
       }
     } else if (currentStage == FIRST_STAGE) {
-      handleWarmingStage(FIRST_STAGE_WARM_UP_TEMP, FIRST_STAGE_WARM_DOWN_TEMP);
+      handleWarmingStage(temperature, FIRST_STAGE_WARM_UP_TEMP, FIRST_STAGE_WARM_DOWN_TEMP);
     } else if (currentStage == SECOND_STAGE) {
-      handleWarmingStage(SECOND_STAGE_WARM_UP_TEMP, SECOND_STAGE_WARM_DOWN_TEMP);
+      handleWarmingStage(temperature, SECOND_STAGE_WARM_UP_TEMP, SECOND_STAGE_WARM_DOWN_TEMP);
     } else if (currentStage == THIRD_STAGE) {
-      handleWarmingStage(THIRD_STAGE_WARM_UP_TEMP, THIRD_STAGE_WARM_DOWN_TEMP);
+      handleWarmingStage(temperature, THIRD_STAGE_WARM_UP_TEMP, THIRD_STAGE_WARM_DOWN_TEMP);
     } else if (currentStage == FOURTH_STAGE) {
       finishStage();
     } else {
@@ -174,20 +174,16 @@ void setRelayState(bool on)
   digitalWrite(RELAY_SENSOR_PIN, on ? HIGH : LOW);
 }
 
-void handleWarmingStage(int warmUpTemp, int warmDownTemp) {
+void handleWarmingStage(float currentTemp, int warmUpTemp, int warmDownTemp) {
   logger.logMsg("Handling warming stage");
+  logger.logTemp(currentTemp);
   logger.logMsg("Warm up temp: ", warmUpTemp);
   logger.logMsg("Warm down temp: ", warmDownTemp);
-
-  float temperature = sensor.getTemperature();
-  indicator.setValue(temperature);
-  
-  logger.logTemp(temperature);
   logger.logMsg("Relay state: ", _bRelayStateOn);
 
-  if (!_bRelayStateOn && temperature < warmUpTemp) {
+  if (!_bRelayStateOn && currentTemp < warmUpTemp) {
     setRelayState(true);
-  } else if (_bRelayStateOn && temperature > warmDownTemp) {
+  } else if (_bRelayStateOn && currentTemp > warmDownTemp) {
     setRelayState(false);
   }
 }
@@ -198,6 +194,7 @@ void finishStage() {
   setGreenLedState(true);
   delay(500);
   setGreenLedState(false);
+  delay(200);
 }
 
 void handleError() {
