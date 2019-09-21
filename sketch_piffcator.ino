@@ -23,27 +23,36 @@
 #define FOURTH_STAGE 4 // 4 состояние: плата включена, программа закончила выполнение
 #define ERROR_STAGE 5 // Ошибка в выполнении
 
-//#define SECOND_STAGE_START_TIME 3000000 // время начала второго этапа
-#define SECOND_STAGE_START_TIME 61000 // время начала второго этапа
-//#define THIRD_STAGE_START_TIME 6000000 // время начала третьего этапа
-#define THIRD_STAGE_START_TIME 121000 // время начала третьего этапа
-//#define FOURTH_STAGE_START_TIME 6600000 // время начала четвертого этапа
-#define FOURTH_STAGE_START_TIME 151000 // время начала четвертого этапа
+//#define DEBUG
 
-//#define FIRST_STAGE_WARM_UP_TEMP 60 // температура после которой включится реле для нагрева
-//#define FIRST_STAGE_WARM_DOWN_TEMP 62 // температура после которой выключится реле для нагрева
+// Константы времени и температуры
+#ifdef DEBUG
+// Время этапов
+#define SECOND_STAGE_START_TIME 61000 // время начала второго этапа
+#define THIRD_STAGE_START_TIME 121000 // время начала третьего этапа
+#define FOURTH_STAGE_START_TIME 151000 // время начала четвертого этапа
+// Температуры
 #define FIRST_STAGE_WARM_UP_TEMP 30 // температура после которой включится реле для нагрева
 #define FIRST_STAGE_WARM_DOWN_TEMP 32 // температура после которой выключится реле для нагрева
-
-//#define SECOND_STAGE_WARM_UP_TEMP 70 // температура после которой включится реле для нагрева
-//#define SECOND_STAGE_WARM_DOWN_TEMP 72 // температура после которой выключится реле для нагрева
 #define SECOND_STAGE_WARM_UP_TEMP 35 // температура после которой включится реле для нагрева
 #define SECOND_STAGE_WARM_DOWN_TEMP 37 // температура после которой выключится реле для нагрева
-
-//#define THIRD_STAGE_WARM_UP_TEMP 76 // температура после которой включится реле для нагрева
-//#define THIRD_STAGE_WARM_DOWN_TEMP 78 // температура после которой выключится реле для нагрева
 #define THIRD_STAGE_WARM_UP_TEMP 40 // температура после которой включится реле для нагрева
 #define THIRD_STAGE_WARM_DOWN_TEMP 42 // температура после которой выключится реле для нагрева
+
+#else
+// Время этапов
+#define SECOND_STAGE_START_TIME 3000000 // время начала второго этапа
+#define THIRD_STAGE_START_TIME 6000000 // время начала третьего этапа
+#define FOURTH_STAGE_START_TIME 6600000 // время начала четвертого этапа
+// Температуры
+#define FIRST_STAGE_WARM_UP_TEMP 60 // температура после которой включится реле для нагрева
+#define FIRST_STAGE_WARM_DOWN_TEMP 62 // температура после которой выключится реле для нагрева
+#define SECOND_STAGE_WARM_UP_TEMP 70 // температура после которой включится реле для нагрева
+#define SECOND_STAGE_WARM_DOWN_TEMP 72 // температура после которой выключится реле для нагрева
+#define THIRD_STAGE_WARM_UP_TEMP 76 // температура после которой включится реле для нагрева
+#define THIRD_STAGE_WARM_DOWN_TEMP 78 // температура после которой выключится реле для нагрева
+
+#endif
 
 
 TemperatureSensor sensor(TEMP_SENSOR_PIN);
