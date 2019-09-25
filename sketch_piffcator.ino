@@ -77,7 +77,6 @@ void setup() {
   pinMode(TEMP_IND_PIN, OUTPUT);
   pinMode(TEMP_IND_RESET_PIN, OUTPUT);
 
-  // Обнуляем счётчик при старте, чтобы он не оказался в случайном состоянии
   indicator.setValue(0);
 
   bool _bGreenLedStateOn = false;
@@ -138,25 +137,15 @@ int getCurrentStage()
 }
 
 bool isRunBtnPressed() {
-  // определить момент «клика» несколько сложнее, чем факт того,
-  // что кнопка сейчас просто нажата. Для определения клика мы
-  // сначала понимаем, отпущена ли кнопка прямо сейчас...
   boolean buttonIsUp = digitalRead(RUN_BTN_PIN);
-
-  // ...если «кнопка была отпущена и (&&) не отпущена сейчас»...
   if (_bRunBtnWasUp && !buttonIsUp) {
-    // ...может это «клик», а может и ложный сигнал (дребезг),
-    // возникающий в момент замыкания/размыкания пластин кнопки,
-    // поэтому даём кнопке полностью «успокоиться»...
     delay(10);
-    // ...и считываем сигнал снова
     buttonIsUp = digitalRead(RUN_BTN_PIN);
-    if (!buttonIsUp) {  // если она всё ещё нажата...
+    if (!buttonIsUp) {
       return true;
     }
   }
 
-  // запоминаем последнее состояние кнопки для новой итерации
   _bRunBtnWasUp = buttonIsUp;
   return false;
 }
